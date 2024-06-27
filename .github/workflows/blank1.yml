@@ -30,11 +30,7 @@ jobs:
       - name: Run Postman collections and generate JUnit XML reports
         run: |
           newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report1.xml"
-     
-      - name: Run Postman collections and generate JUnit XML reports
-        run: |
-          newman run "Collection2.json" -r junit --reporter-junit-export "SampleArtifact/report2.xml"    
-
+          
       # - name: Set up Python
       #   uses: actions/setup-python@v4
       #   with:
@@ -51,9 +47,4 @@ jobs:
         with:
           name: JUnit Report 1
           path: "SampleArtifact/report1.xml"
-
-      - name: Upload JUnit XML Report 2
-        uses: actions/upload-artifact@v4
-        with:
-          name: JUnit Report 2
-          path: "SampleArtifact/report2.xml"
+          
