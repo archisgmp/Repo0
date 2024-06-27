@@ -1,10 +1,6 @@
 name: Testing
 
 on:
-  # push:
-  #   branches: [ "main" ]
-  # pull_request:
-  #   branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -23,13 +19,13 @@ jobs:
           sudo apt-get install -y nodejs
           
       - name: Install newman
-        run: sudo npm install -g newman
+        run: sudo npm install -g newman@6.1.3  # Specify the desired version of newman
          
       - name: Run Postman collections and generate JUnit XML reports
         run: |
-          newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report1.xml" --insecure
-          newman run "Collection2.json" -r junit --reporter-junit-export "SampleArtifact/report2.xml" --insecure
-
+          newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report1.xml" --disable-unicode --insecure
+          newman run "Collection2.json" -r junit --reporter-junit-export "SampleArtifact/report2.xml" --disable-unicode --insecure
+      
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
