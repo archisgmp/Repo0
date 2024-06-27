@@ -37,12 +37,12 @@ jobs:
       # - name: Install Python dependencies
       #   run: pip install tkinter
 
-      - name: Run Python script
-        run: |
-          python compare_xml.py > SampleArtifact/comparison_output.txt
-        env:
-          XML_FILE1: SampleArtifact/report1.xml
-          XML_FILE2: SampleArtifact/report2.xml
+      # - name: Run Python script
+      #   run: |
+      #     python compare_xml.py > SampleArtifact/comparison_output.txt
+      #   env:
+      #     XML_FILE1: SampleArtifact/report1.xml
+      #     XML_FILE2: SampleArtifact/report2.xml
 
       - name: Publish JUnit XML Report 1
         uses: actions/upload-artifact@v4
