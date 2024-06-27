@@ -10,13 +10,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Print file path
+        id: find-file
         run: |
           FILE_NAME="Collection.json"
           FILE_PATH=$(find $GITHUB_WORKSPACE -name $FILE_NAME)
           echo "The path to the file is: $FILE_PATH"
           echo "FILE_PATH=$FILE_PATH" >> $GITHUB_ENV
-
-      - name: Use file path in another step
-        run: echo "File path from environment variable: $FILE_PATH"
-        env:
-          FILE_PATH: ${{ env.FILE_PATH }}
