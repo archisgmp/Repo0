@@ -16,10 +16,10 @@ jobs:
       - name: SetUp Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.15.0
+          node-version: 22.3.0
           
       - name: Install newman
-        run: sudo npm install -g newman@6.1.3  # Specify the desired version of newman
+        run: sudo npm i newman  # Specify the desired version of newman
          
       - name: Run Postman collections and generate JUnit XML reports
         run: |
