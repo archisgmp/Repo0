@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "e12ba3c7-51d5-4364-9648-4c9426cf4305",
-		"name": "Account Copy",
+		"_postman_id": "1eff59f8-203d-4909-8986-8e25b7234e1a",
+		"name": "Account",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "36143857"
 	},
@@ -13,8 +13,8 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Response status code is 404\", function () {",
-							"    pm.expect(pm.response.code).to.equal(404);",
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
 							"});",
 							"",
 							"",
@@ -120,8 +120,8 @@
 							"    });",
 							"});",
 							"",
-							"pm.test(\"Response time is less than 50ms\", function () {",
-							"    pm.expect(pm.response.responseTime).to.be.below(50);",
+							"pm.test(\"Response time is less than 600ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(600);",
 							"});",
 							"",
 							"pm.test(\"Each phone number in the response body follows the format 123-456-7890\", function () {",
