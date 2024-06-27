@@ -27,9 +27,9 @@ jobs:
          
       - name: Run Postman collections and generate JUnit XML reports
         run: |
-          newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report1.xml"
-          newman run "Collection2.json" -r junit --reporter-junit-export "SampleArtifact/report2.xml"
-      
+          newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report1.xml" --insecure
+          newman run "Collection2.json" -r junit --reporter-junit-export "SampleArtifact/report2.xml" --insecure
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
