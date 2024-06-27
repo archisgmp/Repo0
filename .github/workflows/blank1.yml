@@ -23,7 +23,7 @@ jobs:
           sudo apt-get install -y nodejs
           
       - name: Install newman
-        run: npm install -g newman
+        run: sudo npm install -g newman
          
       - name: Run Postman collections and generate JUnit XML reports
         run: |
