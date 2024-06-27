@@ -25,27 +25,40 @@ jobs:
       - name: Install newman
         run: npm install -g newman
          
-      - name: Run Postman collection 1 and generate JUnit XML reports
+      - name: Run Postman collections and generate JUnit XML reports
         run: |
           newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report1.xml"
+          newman run "Collection2.json" -r junit --reporter-junit-export "SampleArtifact/report2.xml"
       
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
             python-version: '3.x'
 
-      # - name: Install Python dependencies
-      #   run: pip install tkinter
+      - name: Install Python dependencies
+        run: pip install tkinter
 
-      # - name: Run Python script
-      #   run: |
-      #     python compare_xml.py > SampleArtifact/comparison_output.txt
-      #   env:
-      #     XML_FILE1: SampleArtifact/report1.xml
-      #     XML_FILE2: SampleArtifact/report2.xml
+      - name: Run Python script
+        run: |
+          python compare_xml.py > SampleArtifact/comparison_output.txt
+        env:
+          XML_FILE1: SampleArtifact/report1.xml
+          XML_FILE2: SampleArtifact/report2.xml
 
       - name: Publish JUnit XML Report 1
         uses: actions/upload-artifact@v4
         with:
           name: JUnit Report 1
           path: SampleArtifact/report1.xml
+
+      - name: Publish JUnit XML Report 2
+        uses: actions/upload-artifact@v4
+        with:
+          name: JUnit Report 2
+          path: SampleArtifact/report2.xml
+  
+      - name: Publish Comparison Output
+        uses: actions/upload-artifact@v4
+        with:
+          name: Comparison Output
+          path: SampleArtifact/comparison_output.txt
