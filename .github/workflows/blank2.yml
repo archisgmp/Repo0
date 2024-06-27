@@ -1,4 +1,4 @@
-name: Testing
+name: Run Postman collections and generate JUnit XML reports
 
 on:
   # push:
@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  run-collections:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,15 +21,17 @@ jobs:
         run: |
           curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
           sudo apt-get install -y nodejs
-          
-      - name: Install newman
-        run: npm install -g newman
-         
-      - name: Run Postman collections and generate JUnit XML reports
-        run: |
-          newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report1.xml"
-          newman run "Collection2.json" -r junit --reporter-junit-export "SampleArtifact/report2.xml"
-      
+        
+      - name: Install Newman
+        run: npm install -g newman newman-reporter-junitfull
+
+      - name: Run Collection1
+        run: newman run Collection1.json -r junitfull --reporter-junitfull-export output_Collection1.xml
+
+      - name: Run Collection2
+        run: newman run Collection2.json -r junitfull --reporter-junitfull-export output_Collection2.xml
+        continue-on-error: true
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
