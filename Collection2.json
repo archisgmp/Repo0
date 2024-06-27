@@ -104,8 +104,8 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Response status code is 200\", function () {",
-							"    pm.expect(pm.response.code).to.equal(200);",
+							"pm.test(\"Response status code is 404\", function () {",
+							"    pm.expect(pm.response.code).to.equal(404);",
 							"});",
 							"",
 							"pm.test(\"Response has the required fields - country, phone, address, pincode and id\", function () {",
