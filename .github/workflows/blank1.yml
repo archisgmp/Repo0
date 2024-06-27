@@ -35,8 +35,8 @@ jobs:
         with:
             python-version: '3.x'
 
-      - name: Install Python dependencies
-        run: pip install tkinter
+      # - name: Install Python dependencies
+      #   run: pip install tkinter
 
       - name: Run Python script
         run: |
