@@ -14,60 +14,60 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Create directory for artifacts
+      - name: Creating directory for artifacts
         run: mkdir -p SampleArtifact
 
-      - name: SetUp Node
+      - name: Setting up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22.3.0
           
-      - name: Install newman
+      - name: Installing Newman
         run: sudo npm i newman@latest
          
-      - name: Run Postman collections and generate JUnit XML reports
+      - name: Running Postman collections and generating JUnit XML reports
         run: |
           newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report1.xml" --disable-unicode --insecure --verbose || echo "Collection1 failed" >> SampleArtifact/error.log
           newman run "Collection2.json" -r junit --reporter-junit-export "SampleArtifact/report2.xml" --disable-unicode --insecure --verbose || echo "Collection2 failed" >> SampleArtifact/error.log
       
-      - name: Set up Python
+      - name: Setting up Python
         uses: actions/setup-python@v4
         with:
             python-version: '3.x'
 
-      - name: Run Python script
+      - name: Running the Python script
         run: |
           python compare_xml.py > SampleArtifact/comparison_output.txt
         env:
           XML_FILE1: SampleArtifact/report1.xml
           XML_FILE2: SampleArtifact/report2.xml
 
-      - name: Publish JUnit XML Report 1
+      - name: Publishing the 1st JUnit XML Report
         uses: actions/upload-artifact@v4
         with:
           name: JUnit Report 1
           path: SampleArtifact/report1.xml
 
-      - name: Publish JUnit XML Report 2
+      - name: Publishing the 2nd JUnit XML Report
         uses: actions/upload-artifact@v4
         with:
           name: JUnit Report 2
           path: SampleArtifact/report2.xml
   
-      - name: Publish Comparison Output
+      - name: Publishing the comparison output
         uses: actions/upload-artifact@v4
         with:
           name: Comparison Output
           path: SampleArtifact/comparison_output.txt
 
-      - name: Publish Error Log
+      - name: Publishing the 1st error log (if any)
         if: failure()
         uses: actions/upload-artifact@v4
         with:
             name: Error Log
             path: SampleArtifact/error1.log
         
-      - name: Publish Error Log
+      - name: Publishing the 2nd error log (if any)
         if: failure()
         uses: actions/upload-artifact@v4
         with:

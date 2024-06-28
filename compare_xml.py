@@ -53,12 +53,12 @@ def compare_files(file1, file2):
     for idx, (file, failures) in enumerate(zip([file1, file2], all_failures)):
         file_name = os.path.basename(file)
         file_index = idx + 1
-        result.append(f"File {file_index} - Test Failures in {file_name}:\n")
+        result.append(f"File {file_index} - Test Failures in {file_name}:")
         if failures:
             for failure in failures:
-                result.append(f"  Test Suite - {failure['testsuite']}\n")
-                result.append(f"  Test Case - {failure['testcase']}\n")
-                result.append(f"  Failure Message - {failure['message']}\n\n")
+                result.append(f"  Test Suite - {failure['testsuite']}")
+                result.append(f"  Test Case - {failure['testcase']}")
+                result.append(f"  Failure Message - {failure['message']}\n")
         else:
             result.append("  No failures.\n")
 
