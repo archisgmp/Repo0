@@ -42,34 +42,23 @@ jobs:
           XML_FILE1: SampleArtifact/report1.xml
           XML_FILE2: SampleArtifact/report2.xml
 
-      - name: Publishing the 1st JUnit XML Report
+      - name: Publishing JUnit XML Reports
         uses: actions/upload-artifact@v4
         with:
-          name: JUnit Report 1
-          path: SampleArtifact/report1.xml
+          name: JUnit Reports
+          path: |
+            SampleArtifact/report1.xml
+            SampleArtifact/report2.xml
 
-      - name: Publishing the 2nd JUnit XML Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: JUnit Report 2
-          path: SampleArtifact/report2.xml
-  
       - name: Publishing the comparison output
         uses: actions/upload-artifact@v4
         with:
           name: Comparison Output
           path: SampleArtifact/comparison_output.txt
 
-      - name: Publishing the 1st error log (if any)
+      - name: Publishing error logs (if any)
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: Error Log 1
-          path: SampleArtifact/error1.log
-      
-      - name: Publishing the 2nd error log (if any)
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: Error Log 2
-          path: SampleArtifact/error2.log
+            name: Error Logs
+            path: SampleArtifact/error*.log
