@@ -23,8 +23,8 @@ jobs:
          
       - name: Run Postman collections and generate JUnit XML reports
         run: |
-          newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report1.xml" || echo "Collection1 failed" >> SampleArtifact/error.log
-          newman run "Collection2.json" -r junit --reporter-junit-export "SampleArtifact/report2.xml" || echo "Collection2 failed" >> SampleArtifact/error.log
+          newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report1.xml"
+          newman run "Collection2.json" -r junit --reporter-junit-export "SampleArtifact/report2.xml"
       
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -59,9 +59,9 @@ jobs:
           name: Comparison Output
           path: SampleArtifact/comparison_output.txt
 
-      - name: Publish Error Log
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: Error Log
-          path: SampleArtifact/error.log
+      # - name: Publish Error Log
+      #   if: failure()
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: Error Log
+      #     path: SampleArtifact/error.log
