@@ -27,8 +27,8 @@ jobs:
          
       - name: Run Postman collections and generate JUnit XML reports
         run: |
-          newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report1.xml" --disable-unicode --insecure 
-          newman run "Collection2.json" -r junit --reporter-junit-export "SampleArtifact/report2.xml" --disable-unicode --insecure
+          newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report1.xml" --disable-unicode --insecure --verbose
+          newman run "Collection2.json" -r junit --reporter-junit-export "SampleArtifact/report2.xml" --disable-unicode --insecure --verbose
       
       - name: Set up Python
         uses: actions/setup-python@v4
