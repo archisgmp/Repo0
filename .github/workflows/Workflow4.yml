@@ -1,6 +1,11 @@
 name: Compare Artifacts from Specific Runs
 
-on: workflow_dispatch
+on: 
+   push:
+    branches: [ "main" ]
+   pull_request:
+    branches: [ "main" ]
+   workflow_dispatch:
 
 jobs:
   compare-artifacts:
@@ -14,13 +19,13 @@ jobs:
     - name: Download Artifact 1
       run: |
         curl -L -o artifact1.zip "https://github.com/Repo1/actions/runs/6/artifacts/Artifact1?workflow=Workflow%203"
-        unzip -q artifact1.zip -d artifacts/artifact1
+        unzip -q artifact1 -d artifacts/artifact1
 
     # Step to download Artifact 2 from Workflow Run 11
     - name: Download Artifact 2
       run: |
         curl -L -o artifact2.zip "https://github.com/Repo1/actions/runs/11/artifacts/Artifact2?workflow=Workflow%203"
-        unzip -q artifact2.zip -d artifacts/artifact2
+        unzip -q artifact2 -d artifacts/artifact2
 
     - name: Set Up Python
       uses: actions/setup-python@v2
