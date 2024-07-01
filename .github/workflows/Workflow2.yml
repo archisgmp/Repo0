@@ -1,14 +1,12 @@
-name: Workflow 2
+name: Workflow 1
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-  workflow_dispatch:
-
+    push:
+      branches: [ "main" ]
+    pull_request:
+      branches: [ "main" ]
+    workflow_dispatch:
+  
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -19,31 +17,31 @@ jobs:
       - name: Creating directory for artifacts
         run: mkdir -p SampleArtifact
 
-      - name: Determine report number
-        id: determine_report_number
-        run: echo $(( $(cat report_number.txt 2>/dev/null || echo 0) + 1 )) > report_number.txt
-
       - name: Setting up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22.3.0' # Update Node.js version if needed
+          node-version: 22.3.0
           
       - name: Installing Newman
-        run: npm install newman@latest
+        run: sudo npm i newman@latest
          
-      - name: Running Postman Collection 1 and generating JUnit XML report
+      - name: Determine report number
+        id: report_number
+        run: echo "::set-output name=report_number::$(($(git rev-list --count HEAD) + 1))"
+
+      - name: Running Postman Collection and generating JUnit XML report
         run: |
-          newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report$(( $(cat report_number.txt) )).xml" || echo "Collection1 failed" >> SampleArtifact/error$(( $(cat report_number.txt) )).log
+          newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report${{ steps.report_number.outputs.report_number }}.xml" || echo "Collection1 failed" >> SampleArtifact/error${{ steps.report_number.outputs.report_number }}.log
 
       - name: Publishing JUnit XML Report
         uses: actions/upload-artifact@v4
         with:
-          name: JUnit Report $(( $(cat report_number.txt) ))
-          path: SampleArtifact/report$(( $(cat report_number.txt) )).xml
+          name: JUnit Report for Collection1
+          path: SampleArtifact/report${{ steps.report_number.outputs.report_number }}.xml
 
       - name: Publishing error log (if any)
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: Error Log $(( $(cat report_number.txt) ))
-          path: SampleArtifact/error$(( $(cat report_number.txt) )).log
+          name: Error Log for Collection1
+          path: SampleArtifact/error${{ steps.report_number.outputs.report_number }}.log
