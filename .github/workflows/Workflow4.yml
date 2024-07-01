@@ -31,11 +31,6 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt  # Assuming requirements.txt lists dependencies for compare_xml.py
-
       - name: Compare XML reports
         run: |
           # Fetch the commits of interest and their corresponding report files
