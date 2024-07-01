@@ -10,26 +10,26 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
-    - name: Download First Artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: artifact1
-        workflow: Workflow 3
-        run-id: 6  # Replace with the run ID for Workflow 3 #6
-        path: artifacts/artifact1
+    # Step to download Artifact 1 from Workflow Run 6
+    - name: Download Artifact 1
+      run: |
+        curl -L -o artifact1.zip "https://github.com/Repo1/actions/runs/6/artifacts/Artifact1?workflow=Workflow%203"
+        unzip -q artifact1.zip -d artifacts/artifact1
 
-    - name: Download Second Artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: artifact2
-        workflow: Workflow 3
-        run-id: 11  # Replace with the run ID for Workflow 3 #11
-        path: artifacts/artifact2
+    # Step to download Artifact 2 from Workflow Run 11
+    - name: Download Artifact 2
+      run: |
+        curl -L -o artifact2.zip "https://github.com/Repo1/actions/runs/11/artifacts/Artifact2?workflow=Workflow%203"
+        unzip -q artifact2.zip -d artifacts/artifact2
 
     - name: Set Up Python
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
+
+    - name: Install Dependencies
+      run: |
+        pip install xmldiff
 
     - name: Compare Artifacts
       run: |
