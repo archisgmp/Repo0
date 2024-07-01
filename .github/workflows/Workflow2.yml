@@ -15,42 +15,56 @@ jobs:
       - name: Checkout the current commit
         uses: actions/checkout@v4
 
+      - name: Check for previous commit
+        id: previous_commit_check
+        run: |
+          if [ $(git rev-list --count HEAD) -gt 1 ]; then
+            echo "previous_commit_exists=true" >> $GITHUB_ENV
+          else
+            echo "previous_commit_exists=false" >> $GITHUB_ENV
+          fi
+
       - name: Creating directory for artifacts
         run: mkdir -p SampleArtifact
 
       - name: Checkout the previous commit
+        if: env.previous_commit_exists == 'true'
         run: |
           git fetch --all
           git checkout HEAD~1
 
       - name: Copy previous Collection1.json to artifacts
+        if: env.previous_commit_exists == 'true'
         run: cp Collection1.json SampleArtifact/Collection1_previous.json
 
       - name: Checkout back to the current commit
+        if: env.previous_commit_exists == 'true'
         run: git checkout -
 
       - name: Setting up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22.3.0
-          
+
       - name: Installing Newman
         run: sudo npm i newman@latest
-         
+
       - name: Running current Postman collection and generating JUnit XML report
         run: |
           newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report_current.xml" || echo "Collection1 failed" >> SampleArtifact/error_current.log
 
       - name: Running previous Postman collection and generating JUnit XML report
+        if: env.previous_commit_exists == 'true'
         run: |
           newman run "SampleArtifact/Collection1_previous.json" -r junit --reporter-junit-export "SampleArtifact/report_previous.xml" || echo "Collection1_previous failed" >> SampleArtifact/error_previous.log
-      
+
       - name: Setting up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
       - name: Running the Python script to compare XML reports
+        if: env.previous_commit_exists == 'true'
         run: |
           python compare_xml.py > SampleArtifact/comparison_output.txt
         env:
@@ -75,5 +89,5 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-            name: Error Logs
-            path: SampleArtifact/error*.log
+          name: Error Logs
+          path: SampleArtifact/error*.log
