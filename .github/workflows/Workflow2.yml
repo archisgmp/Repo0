@@ -1,4 +1,4 @@
-name: Workflow 2
+name: Workflow 1
 
 on:
     push:
@@ -18,25 +18,37 @@ jobs:
       - name: Creating directory for artifacts
         run: mkdir -p SampleArtifact
 
-      - name: Checkout the previous commit
+      - name: Check for previous commit
+        id: previous_commit_check
+        run: |
+          if [ $(git rev-list --count HEAD) -gt 1 ]; then
+            echo "previous_commit_exists=true" >> $GITHUB_ENV
+          else
+            echo "previous_commit_exists=false" >> $GITHUB_ENV
+          fi
+
+      - name: Checkout the previous commit if it exists
+        if: env.previous_commit_exists == 'true'
         run: |
           git fetch --all
           git checkout HEAD~1
 
-      - name: Copy previous Collection1.json to artifacts
+      - name: Copy previous Collection1.json to artifacts if it exists
+        if: env.previous_commit_exists == 'true'
         run: cp Collection1.json SampleArtifact/Collection1_previous.json
 
-      - name: Checkout back to the current commit
+      - name: Checkout back to the current commit if previous commit exists
+        if: env.previous_commit_exists == 'true'
         run: git checkout -
 
       - name: Setting up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22.3.0
-          
+
       - name: Installing Newman
         run: sudo npm i newman@latest
-         
+
       - name: Running Postman collections and generating JUnit XML reports
         run: |
           newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report1.xml" || echo "Collection1 failed" >> SampleArtifact/error1.log
@@ -45,16 +57,17 @@ jobs:
       - name: Setting up Python
         uses: actions/setup-python@v4
         with:
-            python-version: '3.x'
+          python-version: '3.x'
 
-      - name: Running the Python script for Collection1.json
+      - name: Running the Python script for Collection1.json comparison if previous commit exists
+        if: env.previous_commit_exists == 'true'
         run: |
           python compare_xml.py > SampleArtifact/comparison_output1.txt
         env:
           XML_FILE1: SampleArtifact/Collection1_previous.json
           XML_FILE2: Collection1.json
 
-      - name: Running the Python script for Collection2.json
+      - name: Running the Python script for Collection2.json comparison
         run: |
           python compare_xml.py > SampleArtifact/comparison_output2.txt
         env:
@@ -81,6 +94,5 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-            name: Error Logs
-            path: SampleArtifact/error*.log
-
+          name: Error Logs
+          path: SampleArtifact/error*.log
