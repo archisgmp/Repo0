@@ -1,11 +1,13 @@
 name: Workflow 2
 
 on:
-    push:
-      branches: [ "main" ]
-    pull_request:
-      branches: [ "main" ]
-    workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -17,27 +19,31 @@ jobs:
       - name: Creating directory for artifacts
         run: mkdir -p SampleArtifact
 
+      - name: Determine report number
+        id: determine_report_number
+        run: echo $(( $(cat report_number.txt 2>/dev/null || echo 0) + 1 )) > report_number.txt
+
       - name: Setting up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.3.0
+          node-version: '22.3.0' # Update Node.js version if needed
           
       - name: Installing Newman
-        run: sudo npm i newman@latest
+        run: npm install newman@latest
          
       - name: Running Postman Collection 1 and generating JUnit XML report
         run: |
-          newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report-${{ github.sha }}.xml" || echo "Collection1 failed" >> SampleArtifact/error-${{ github.sha }}.log
+          newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report$(( $(cat report_number.txt) )).xml" || echo "Collection1 failed" >> SampleArtifact/error$(( $(cat report_number.txt) )).log
 
       - name: Publishing JUnit XML Report
         uses: actions/upload-artifact@v4
         with:
-          name: JUnit Report for Commit ${{ github.sha }}
-          path: SampleArtifact/report-${{ github.sha }}.xml
+          name: JUnit Report $(( $(cat report_number.txt) ))
+          path: SampleArtifact/report$(( $(cat report_number.txt) )).xml
 
       - name: Publishing error log (if any)
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: Error Log for Commit ${{ github.sha }}
-          path: SampleArtifact/error-${{ github.sha }}.log
+          name: Error Log $(( $(cat report_number.txt) ))
+          path: SampleArtifact/error$(( $(cat report_number.txt) )).log
