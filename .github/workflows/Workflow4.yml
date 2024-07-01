@@ -8,15 +8,6 @@ on:
     branches:
       - main
   workflow_dispatch:
-    inputs:
-      commit_before:
-        description: 'SHA of the commit before the current one'
-        required: true
-        default: '3d6fe4105dda28d4c5f03734424a95ce4be3f32c'
-      current_commit:
-        description: 'SHA of the current commit'
-        required: true
-        default: 'bee73f83acc400e69c6aff3e280e6a09ab8a7708'
 
 jobs:
   compare_reports:
@@ -35,9 +26,9 @@ jobs:
         run: |
           # Fetch the commits of interest and their corresponding report files
           git fetch origin
-          git checkout ${{ github.event.inputs.commit_before }}
+          git checkout ${{ github.event.before }}
           cp SampleArtifact/report1.xml report1.xml
-          git checkout ${{ github.event.inputs.current_commit }}
+          git checkout ${{ github.sha }}
           cp SampleArtifact/report1.xml report2.xml
 
           # Run comparison script
