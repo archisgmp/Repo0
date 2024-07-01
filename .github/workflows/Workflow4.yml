@@ -1,0 +1,40 @@
+name: Workflow 4
+
+on:
+    push:
+      branches: [ "main" ]
+    pull_request:
+      branches: [ "main" ]
+    workflow_dispatch:
+
+jobs:
+  compare_reports:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Compare XML reports
+        run: |
+          # Checkout commit 3d6fe41 and copy report1.xml
+          git checkout 3d6fe41
+          cp SampleArtifact/report1.xml report1_commit1.xml
+
+          # Checkout commit bee73f8 and copy report1.xml
+          git checkout bee73f8
+          cp SampleArtifact/report1.xml report1_commit2.xml
+
+          # Run comparison script
+          python compare_xml.py report1_commit1.xml report1_commit2.xml > SampleArtifact/comparison_output.txt
+
+      - name: Upload comparison output
+        uses: actions/upload-artifact@v2
+        with:
+          name: Comparison Output
+          path: SampleArtifact/comparison_output.txt
