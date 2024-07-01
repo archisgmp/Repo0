@@ -23,11 +23,11 @@ jobs:
       - name: Compare XML reports
         run: |
           # Checkout commit 3d6fe41 and copy report1.xml
-          git checkout 3d6fe41
+          git checkout 3d6fe4105dda28d4c5f03734424a95ce4be3f32c
           cp SampleArtifact/report1.xml report1_commit1.xml
 
           # Checkout commit bee73f8 and copy report1.xml
-          git checkout bee73f8
+          git checkout bee73f83acc400e69c6aff3e280e6a09ab8a7708
           cp SampleArtifact/report1.xml report1_commit2.xml
 
           # Run comparison script
