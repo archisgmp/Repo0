@@ -1,7 +1,11 @@
 name: Workflow 2
 
 on:
-  workflow_dispatch:
+    push:
+      branches: [ "main" ]
+    pull_request:
+      branches: [ "main" ]
+    workflow_dispatch:
 
 jobs:
   build:
@@ -16,24 +20,25 @@ jobs:
       - name: Setting up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '14' # Update Node.js version if needed
+          node-version: 22.3.0
           
       - name: Installing Newman
-        run: npm install newman@latest
+        run: sudo npm i newman@latest
          
-      - name: Running Postman Collection 1 and generating JUnit XML report
+      - name: Running Postman collections and generating JUnit XML reports
         run: |
           newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report1.xml" || echo "Collection1 failed" >> SampleArtifact/error1.log
 
-      - name: Publishing JUnit XML Report
+      - name: Publishing JUnit XML Reports
         uses: actions/upload-artifact@v4
         with:
-          name: JUnit Report for Collection1
-          path: SampleArtifact/report1.xml
+          name: JUnit Reports
+          path: |
+            SampleArtifact/report1.xml
 
-      - name: Publishing error log (if any)
+      - name: Publishing error logs (if any)
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: Error Log for Collection1
-          path: SampleArtifact/error1.log
+            name: Error Logs
+            path: SampleArtifact/error*.log
