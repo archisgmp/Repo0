@@ -1,0 +1,45 @@
+name: Compare Artifacts from Specific Runs
+
+on: workflow_dispatch
+
+jobs:
+  compare-artifacts:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Download First Artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: artifact1
+        workflow: Workflow 3
+        run-id: 6  # Replace with the run ID for Workflow 3 #6
+        path: artifacts/artifact1
+
+    - name: Download Second Artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: artifact2
+        workflow: Workflow 3
+        run-id: 11  # Replace with the run ID for Workflow 3 #11
+        path: artifacts/artifact2
+
+    - name: Set Up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Compare Artifacts
+      run: |
+        python compare_xml.py
+      env:
+        XML_FILE1: artifacts/artifact1/report.xml
+        XML_FILE2: artifacts/artifact2/report.xml
+
+    - name: Upload Comparison Result
+      uses: actions/upload-artifact@v3
+      with:
+        name: comparison_result
+        path: SampleArtifact/comparison_output.txt
