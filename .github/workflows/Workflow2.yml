@@ -1,4 +1,4 @@
-name: Workflow 2
+name: Workflow 1
 
 on:
   push:
@@ -29,7 +29,7 @@ jobs:
       - name: Check if previous report exists
         id: previous_report_check
         run: |
-          if [ -f SampleArtifact/report_current.xml ]; then
+          if [ -f SampleArtifact/report1.xml ]; then
             echo "previous_report_exists=true" >> $GITHUB_ENV
           else
             echo "previous_report_exists=false" >> $GITHUB_ENV
@@ -43,9 +43,9 @@ jobs:
       - name: Installing Newman
         run: sudo npm i newman@latest
 
-      - name: Running current Postman collection and generating JUnit XML report
+      - name: Running Postman collection and generating JUnit XML report
         run: |
-          newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report_current.xml" || echo "Collection1 failed" >> SampleArtifact/error_current.log
+          newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report${{ github.run_number }}.xml" || echo "Collection1 failed" >> SampleArtifact/error${{ github.run_number }}.log
 
       - name: Setting up Python
         uses: actions/setup-python@v4
@@ -53,29 +53,29 @@ jobs:
           python-version: '3.x'
 
       - name: Running the Python script to compare XML reports
-        if: env.previous_report_exists == 'true'
+        if: env.previous_report_exists == 'true' && ${{ github.run_number }} > 1
         run: |
-          python compare_xml.py > SampleArtifact/comparison_output.txt
+          python compare_xml.py > SampleArtifact/comparison_output_${{ github.run_number }}.txt
         env:
-          XML_FILE1: SampleArtifact/report_current.xml
-          XML_FILE2: SampleArtifact/report_current.xml
+          XML_FILE1: SampleArtifact/report$((github.run_number - 1)).xml
+          XML_FILE2: SampleArtifact/report${{ github.run_number }}.xml
 
-      - name: Publishing JUnit XML Reports
+      - name: Publishing JUnit XML Report
         uses: actions/upload-artifact@v4
         with:
-          name: JUnit Reports
-          path: SampleArtifact/report_current.xml
+          name: JUnit Report ${{ github.run_number }}
+          path: SampleArtifact/report${{ github.run_number }}.xml
 
       - name: Publishing the comparison output
-        if: env.previous_report_exists == 'true'
+        if: env.previous_report_exists == 'true' && ${{ github.run_number }} > 1
         uses: actions/upload-artifact@v4
         with:
-          name: Comparison Output
-          path: SampleArtifact/comparison_output.txt
+          name: Comparison Output ${{ github.run_number }}
+          path: SampleArtifact/comparison_output_${{ github.run_number }}.txt
 
       - name: Publishing error logs (if any)
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: Error Logs
-          path: SampleArtifact/error*.log
+          name: Error Logs ${{ github.run_number }}
+          path: SampleArtifact/error${{ github.run_number }}.log
