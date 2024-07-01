@@ -1,11 +1,11 @@
-name: Workflow 1
+name: Workflow 2
 
 on:
-    push:
-      branches: [ "main" ]
-    pull_request:
-      branches: [ "main" ]
-    workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -18,81 +18,62 @@ jobs:
       - name: Creating directory for artifacts
         run: mkdir -p SampleArtifact
 
-      - name: Check for previous commit
-        id: previous_commit_check
-        run: |
-          if [ $(git rev-list --count HEAD) -gt 1 ]; then
-            echo "previous_commit_exists=true" >> $GITHUB_ENV
-          else
-            echo "previous_commit_exists=false" >> $GITHUB_ENV
-          fi
-
-      - name: Checkout the previous commit if it exists
-        if: env.previous_commit_exists == 'true'
+      - name: Checkout the previous commit
         run: |
           git fetch --all
           git checkout HEAD~1
 
-      - name: Copy previous Collection1.json to artifacts if it exists
-        if: env.previous_commit_exists == 'true'
+      - name: Copy previous Collection1.json to artifacts
         run: cp Collection1.json SampleArtifact/Collection1_previous.json
 
-      - name: Checkout back to the current commit if previous commit exists
-        if: env.previous_commit_exists == 'true'
+      - name: Checkout back to the current commit
         run: git checkout -
 
       - name: Setting up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22.3.0
-
+          
       - name: Installing Newman
         run: sudo npm i newman@latest
-
-      - name: Running Postman collections and generating JUnit XML reports
+         
+      - name: Running current Postman collection and generating JUnit XML report
         run: |
-          newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report1.xml" || echo "Collection1 failed" >> SampleArtifact/error1.log
-          newman run "Collection2.json" -r junit --reporter-junit-export "SampleArtifact/report2.xml" || echo "Collection2 failed" >> SampleArtifact/error2.log
+          newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report_current.xml" || echo "Collection1 failed" >> SampleArtifact/error_current.log
 
+      - name: Running previous Postman collection and generating JUnit XML report
+        run: |
+          newman run "SampleArtifact/Collection1_previous.json" -r junit --reporter-junit-export "SampleArtifact/report_previous.xml" || echo "Collection1_previous failed" >> SampleArtifact/error_previous.log
+      
       - name: Setting up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
-      - name: Running the Python script for Collection1.json comparison if previous commit exists
-        if: env.previous_commit_exists == 'true'
+      - name: Running the Python script to compare XML reports
         run: |
-          python compare_xml.py > SampleArtifact/comparison_output1.txt
+          python compare_xml.py > SampleArtifact/comparison_output.txt
         env:
-          XML_FILE1: SampleArtifact/Collection1_previous.json
-          XML_FILE2: Collection1.json
-
-      - name: Running the Python script for Collection2.json comparison
-        run: |
-          python compare_xml.py > SampleArtifact/comparison_output2.txt
-        env:
-          XML_FILE1: SampleArtifact/report1.xml
-          XML_FILE2: SampleArtifact/report2.xml
+          XML_FILE1: SampleArtifact/report_previous.xml
+          XML_FILE2: SampleArtifact/report_current.xml
 
       - name: Publishing JUnit XML Reports
         uses: actions/upload-artifact@v4
         with:
           name: JUnit Reports
           path: |
-            SampleArtifact/report1.xml
-            SampleArtifact/report2.xml
+            SampleArtifact/report_current.xml
+            SampleArtifact/report_previous.xml
 
-      - name: Publishing the comparison outputs
+      - name: Publishing the comparison output
         uses: actions/upload-artifact@v4
         with:
-          name: Comparison Outputs
-          path: |
-            SampleArtifact/comparison_output1.txt
-            SampleArtifact/comparison_output2.txt
+          name: Comparison Output
+          path: SampleArtifact/comparison_output.txt
 
       - name: Publishing error logs (if any)
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: Error Logs
-          path: SampleArtifact/error*.log
+            name: Error Logs
+            path: SampleArtifact/error*.log
