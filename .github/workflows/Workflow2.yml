@@ -1,4 +1,4 @@
-name: Workflow 1
+name: Workflow 2
 
 on:
     push:
@@ -12,22 +12,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout the current commit
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
+      
       - name: Creating directory for artifacts
         run: mkdir -p SampleArtifact
-
-      - name: Checkout the previous commit
-        run: |
-          git fetch --all
-          git checkout HEAD~1
-
-      - name: Copy previous Collection1.json to artifacts
-        run: cp Collection1.json SampleArtifact/Collection1_previous.json
-
-      - name: Checkout back to the current commit
-        run: git checkout -
 
       - name: Setting up Node.js
         uses: actions/setup-node@v4
@@ -41,22 +29,15 @@ jobs:
         run: |
           newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report1.xml" || echo "Collection1 failed" >> SampleArtifact/error1.log
           newman run "Collection2.json" -r junit --reporter-junit-export "SampleArtifact/report2.xml" || echo "Collection2 failed" >> SampleArtifact/error2.log
-
+      
       - name: Setting up Python
         uses: actions/setup-python@v4
         with:
             python-version: '3.x'
 
-      - name: Running the Python script for Collection1.json
+      - name: Running the Python script
         run: |
-          python compare_xml.py > SampleArtifact/comparison_output1.txt
-        env:
-          XML_FILE1: SampleArtifact/Collection1_previous.json
-          XML_FILE2: Collection1.json
-
-      - name: Running the Python script for Collection2.json
-        run: |
-          python compare_xml.py > SampleArtifact/comparison_output2.txt
+          python compare_xml.py > SampleArtifact/comparison_output.txt
         env:
           XML_FILE1: SampleArtifact/report1.xml
           XML_FILE2: SampleArtifact/report2.xml
@@ -69,13 +50,11 @@ jobs:
             SampleArtifact/report1.xml
             SampleArtifact/report2.xml
 
-      - name: Publishing the comparison outputs
+      - name: Publishing the comparison output
         uses: actions/upload-artifact@v4
         with:
-          name: Comparison Outputs
-          path: |
-            SampleArtifact/comparison_output1.txt
-            SampleArtifact/comparison_output2.txt
+          name: Comparison Output
+          path: SampleArtifact/comparison_output.txt
 
       - name: Publishing error logs (if any)
         if: failure()
