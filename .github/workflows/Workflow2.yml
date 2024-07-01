@@ -24,20 +24,53 @@ jobs:
           
       - name: Installing Newman
         run: sudo npm i newman@latest
-         
-      - name: Running Postman Collection 1 and generating JUnit XML report
+      
+      # Fetch the previous commit and extract the report
+      - name: Fetching previous commit
+        run: git fetch --depth=2 && git checkout HEAD~1
+
+      - name: Copying previous report
+        run: |
+          mkdir -p SampleArtifact/previous
+          cp -v "SampleArtifact/report1.xml" "SampleArtifact/previous/report1.xml"
+      
+      # Checkout back to the current commit
+      - name: Checkout current commit
+        run: git checkout -
+
+      - name: Running Postman collections and generating JUnit XML reports
         run: |
           newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report1.xml" || echo "Collection1 failed" >> SampleArtifact/error1.log
+      
+      - name: Setting up Python
+        uses: actions/setup-python@v4
+        with:
+            python-version: '3.x'
 
-      - name: Publishing JUnit XML Report
+      - name: Running the Python script for comparison
+        run: |
+          python compare_xml.py > SampleArtifact/comparison_output.txt
+        env:
+          XML_FILE1: SampleArtifact/previous/report1.xml
+          XML_FILE2: SampleArtifact/report1.xml
+
+      - name: Publishing JUnit XML Reports
         uses: actions/upload-artifact@v4
         with:
-          name: JUnit Report for Collection1
-          path: SampleArtifact/report1.xml
+          name: JUnit Reports
+          path: |
+            SampleArtifact/report1.xml
+            SampleArtifact/previous/report1.xml
 
-      - name: Publishing error log (if any)
+      - name: Publishing the comparison output
+        uses: actions/upload-artifact@v4
+        with:
+          name: Comparison Output
+          path: SampleArtifact/comparison_output.txt
+
+      - name: Publishing error logs (if any)
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: Error Log for Collection1
-          path: SampleArtifact/error1.log
+            name: Error Logs
+            path: SampleArtifact/error*.
