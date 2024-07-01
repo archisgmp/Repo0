@@ -1,11 +1,13 @@
-name: Workflow 4
+name: Workflow 3
 
 on:
-    push:
-      branches: [ "main" ]
-    pull_request:
-      branches: [ "main" ]
-    workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -20,22 +22,21 @@ jobs:
           node-version: '22.3.0'
           
       - name: Installing Newman
-        run: npm install -g newman@latest
-         
+        run: sudo npm install -g newman
+
       - name: Running Postman Collection 1 and generating JUnit XML report
         run: |
-          mkdir -p reports
-          newman run "Collection1.json" -r junit --reporter-junit-export "reports/report1.xml" || echo "Collection1 failed" >> reports/error1.log
+          newman run "Collection1.json" -r junit --reporter-junit-export "report1.xml" || echo "Collection1 failed" >> "error1.log"
 
       - name: Publishing JUnit XML Report
         uses: actions/upload-artifact@v4
         with:
           name: JUnit Report for Collection1
-          path: reports/report1.xml
+          path: report1.xml
 
       - name: Publishing error log (if any)
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: Error Log for Collection1
-          path: reports/error1.log
+          path: error1.log
