@@ -1,4 +1,4 @@
-name: Workflow 2
+name: Workflow 3
 
 on:
   push:
@@ -26,13 +26,15 @@ jobs:
         run: |
           newman run "Collection1.json" -r junit --reporter-junit-export "report1.xml" || echo "Collection1 failed" >> error1.log
 
-      - name: Configuring git for commit
-        run: |
-          git config --global user.name 'archisgmp'
-          git config --global user.email 'archis@getmyparking.com'
+      - name: Publishing JUnit XML Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: JUnit Report for Collection1
+          path: report1.xml
 
-      - name: Adding and committing report1.xml to the repository
-        run: |
-          git add report1.xml
-          git commit -m "Add generated report1.xml"
-          git push origin main
+      - name: Publishing error log (if any)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Error Log for Collection1
+          path: error1.log
