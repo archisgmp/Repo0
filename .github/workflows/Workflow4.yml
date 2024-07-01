@@ -1,7 +1,11 @@
-name: Workflow 4
+name: Workflow 3
 
 on:
-  workflow_dispatch:
+    push:
+      branches: [ "main" ]
+    pull_request:
+      branches: [ "main" ]
+    workflow_dispatch:
 
 jobs:
   build:
@@ -10,6 +14,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Create Reports Directory
+        run: |
+          mkdir -p reports
+          git add reports
+          git commit -m "Create reports directory" || echo "reports directory already exists"
+          git push
+
       - name: Setting up Node.js
         uses: actions/setup-node@v4
         with:
@@ -20,7 +31,6 @@ jobs:
          
       - name: Running Postman Collection 1 and generating JUnit XML report
         run: |
-          mkdir -p reports
           newman run "Collection1.json" -r junit --reporter-junit-export "reports/report1.xml" || echo "Collection1 failed" >> reports/error1.log
 
       - name: Publishing JUnit XML Report
