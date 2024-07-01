@@ -1,11 +1,22 @@
-name: Workflow 4
+name: Compare XML Reports
 
 on:
-    push:
-      branches: [ "main" ]
-    pull_request:
-      branches: [ "main" ]
-    workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      commit_before:
+        description: 'SHA of the commit before the current one'
+        required: true
+        default: '3d6fe4105dda28d4c5f03734424a95ce4be3f32c'
+      current_commit:
+        description: 'SHA of the current commit'
+        required: true
+        default: 'bee73f83acc400e69c6aff3e280e6a09ab8a7708'
 
 jobs:
   compare_reports:
@@ -20,18 +31,22 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt  # Assuming requirements.txt lists dependencies for compare_xml.py
+
       - name: Compare XML reports
         run: |
-          # Checkout commit 3d6fe41 and copy report1.xml
-          git checkout 3d6fe4105dda28d4c5f03734424a95ce4be3f32c
-          cp SampleArtifact/report1.xml report1_commit1.xml
-
-          # Checkout commit bee73f8 and copy report1.xml
-          git checkout bee73f83acc400e69c6aff3e280e6a09ab8a7708
-          cp SampleArtifact/report1.xml report1_commit2.xml
+          # Fetch the commits of interest and their corresponding report files
+          git fetch origin
+          git checkout ${{ github.event.inputs.commit_before }}
+          cp SampleArtifact/report1.xml report1.xml
+          git checkout ${{ github.event.inputs.current_commit }}
+          cp SampleArtifact/report1.xml report2.xml
 
           # Run comparison script
-          python compare_xml.py report1_commit1.xml report1_commit2.xml > SampleArtifact/comparison_output.txt
+          python compare_xml.py report1.xml report2.xml > SampleArtifact/comparison_output.txt
 
       - name: Upload comparison output
         uses: actions/upload-artifact@v2
