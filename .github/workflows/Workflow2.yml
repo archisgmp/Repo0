@@ -18,69 +18,56 @@ jobs:
       - name: Creating directory for artifacts
         run: mkdir -p SampleArtifact
 
-      - name: Check if previous commit exists
-        id: previous_commit_check
+      - name: Download previous report artifact
+        id: download-previous-report
+        uses: actions/download-artifact@v4
+        with:
+          name: JUnit Reports
+          path: SampleArtifact
+        continue-on-error: true
+
+      - name: Check if previous report exists
+        id: previous_report_check
         run: |
-          if [ $(git rev-list --count HEAD) -gt 1 ]; then
-            echo "previous_commit_exists=true" >> $GITHUB_ENV
+          if [ -f SampleArtifact/report_current.xml ]; then
+            echo "previous_report_exists=true" >> $GITHUB_ENV
           else
-            echo "previous_commit_exists=false" >> $GITHUB_ENV
+            echo "previous_report_exists=false" >> $GITHUB_ENV
           fi
-
-      - name: Checkout the previous commit
-        if: env.previous_commit_exists == 'true'
-        run: |
-          git fetch --all
-          git checkout HEAD~1
-
-      - name: Copy previous Collection1.json to artifacts
-        if: env.previous_commit_exists == 'true'
-        run: cp Collection1.json SampleArtifact/Collection1_previous.json
-
-      - name: Checkout back to the current commit
-        if: env.previous_commit_exists == 'true'
-        run: git checkout -
 
       - name: Setting up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22.3.0
-          
+
       - name: Installing Newman
         run: sudo npm i newman@latest
-         
+
       - name: Running current Postman collection and generating JUnit XML report
         run: |
           newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report_current.xml" || echo "Collection1 failed" >> SampleArtifact/error_current.log
 
-      - name: Running previous Postman collection and generating JUnit XML report
-        if: env.previous_commit_exists == 'true'
-        run: |
-          newman run "SampleArtifact/Collection1_previous.json" -r junit --reporter-junit-export "SampleArtifact/report_previous.xml" || echo "Collection1_previous failed" >> SampleArtifact/error_previous.log
-      
       - name: Setting up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
       - name: Running the Python script to compare XML reports
-        if: env.previous_commit_exists == 'true'
+        if: env.previous_report_exists == 'true'
         run: |
           python compare_xml.py > SampleArtifact/comparison_output.txt
         env:
-          XML_FILE1: SampleArtifact/report_previous.xml
+          XML_FILE1: SampleArtifact/report_current.xml
           XML_FILE2: SampleArtifact/report_current.xml
 
       - name: Publishing JUnit XML Reports
         uses: actions/upload-artifact@v4
         with:
           name: JUnit Reports
-          path: |
-            SampleArtifact/report_current.xml
-            SampleArtifact/report_previous.xml
+          path: SampleArtifact/report_current.xml
 
       - name: Publishing the comparison output
-        if: env.previous_commit_exists == 'true'
+        if: env.previous_report_exists == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: Comparison Output
@@ -90,5 +77,5 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-            name: Error Logs
-            path: SampleArtifact/error*.log
+          name: Error Logs
+          path: SampleArtifact/error*.log
