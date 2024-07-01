@@ -1,10 +1,6 @@
 name: Workflow 2
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -12,69 +8,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       
       - name: Creating directory for artifacts
         run: mkdir -p SampleArtifact
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - name: Setting up Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: '14'
-
-      - name: Install Newman
-        run: npm install -g newman@latest
-
-      - name: Run Collection1 and generate current report
+          node-version: '14' # Update Node.js version if needed
+          
+      - name: Installing Newman
+        run: npm install newman@latest
+         
+      - name: Running Postman Collection 1 and generating JUnit XML report
         run: |
-          newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/current_report.xml" || echo "Collection1 failed" >> SampleArtifact/error.log
+          newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report1.xml" || echo "Collection1 failed" >> SampleArtifact/error1.log
 
-      - name: Find previous commit hash for Collection1.json
-        id: find_previous_commit
-        run: |
-          PREVIOUS_COMMIT=$(git log -n 1 --format=format:%H -- Collection1.json || echo "")
-          echo "::set-output name=commit_hash::$PREVIOUS_COMMIT"
-
-      - name: Check if previous commit exists
-        run: |
-          echo "Previous commit hash: ${{ steps.find_previous_commit.outputs.commit_hash }}"
-
-      - name: Checkout previous commit of Collection1.json if exists
-        if: steps.find_previous_commit.outputs.commit_hash != ''
-        uses: actions/checkout@v2
+      - name: Publishing JUnit XML Report
+        uses: actions/upload-artifact@v4
         with:
-          ref: ${{ steps.find_previous_commit.outputs.commit_hash }}
+          name: JUnit Report for Collection1
+          path: SampleArtifact/report1.xml
 
-      - name: Run Collection1 and generate previous report if exists
-        if: steps.find_previous_commit.outputs.commit_hash != ''
-        run: |
-          newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/previous_report.xml" || echo "Collection1 failed" >> SampleArtifact/error.log
-
-      - name: Compare XML reports if previous commit exists
-        if: steps.find_previous_commit.outputs.commit_hash != ''
-        run: python compare_xml.py SampleArtifact/current_report.xml SampleArtifact/previous_report.xml > SampleArtifact/comparison_output.txt
-        env:
-          PYTHONIOENCODING: UTF-8
-
-      - name: Publish JUnit XML Reports
-        uses: actions/upload-artifact@v2
-        with:
-          name: JUnit Reports
-          path: |
-            SampleArtifact/current_report.xml
-            SampleArtifact/previous_report.xml
-
-      - name: Publish Comparison Output if previous commit exists
-        if: steps.find_previous_commit.outputs.commit_hash != ''
-        uses: actions/upload-artifact@v2
-        with:
-          name: Comparison Output
-          path: SampleArtifact/comparison_output.txt
-
-      - name: Publish error logs (if any)
+      - name: Publishing error log (if any)
         if: failure()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
-          name: Error Logs
-          path: SampleArtifact/error.log
+          name: Error Log for Collection1
+          path: SampleArtifact/error1.log
