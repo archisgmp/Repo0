@@ -1,11 +1,7 @@
-name: Workflow 3
+name: Workflow 4
 
 on:
-    push:
-      branches: [ "main" ]
-    pull_request:
-      branches: [ "main" ]
-    workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
   build:
@@ -14,12 +10,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Set up Git with User Identity
+        run: |
+          git config --global user.email "archis@getmyparking.com"
+          git config --global user.name "archisgmp"
+          
       - name: Create Reports Directory
         run: |
           mkdir -p reports
           git add reports
           git commit -m "Create reports directory" || echo "reports directory already exists"
-          git push
+          git push origin HEAD:main
 
       - name: Setting up Node.js
         uses: actions/setup-node@v4
