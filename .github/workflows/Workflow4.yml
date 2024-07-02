@@ -1,4 +1,4 @@
-name: Workflow 4
+name: XML Comparison Workflow
 
 on:
   push:
@@ -38,11 +38,11 @@ jobs:
           echo "XML_FILE1=$(cat xml_files.txt | head -n 1)" >> $GITHUB_ENV
           echo "XML_FILE2=$(cat xml_files.txt | tail -n 1)" >> $GITHUB_ENV
 
-      - name: Run XML comparison script
+      - name: Run XML comparison script and generate output
         env:
           XML_FILE1: ${{ env.XML_FILE1 }}
           XML_FILE2: ${{ env.XML_FILE2 }}
-        run: python compare_xml.py
+        run: python compare_xml.py > comparison_output.txt
 
       - name: Create Output folder and move comparison output
         run: |
