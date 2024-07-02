@@ -65,17 +65,14 @@ def compare_files(file1, file2):
     if xml_files_identical(file1, file2):
         result.append(f"\nThe files {os.path.basename(file1)} and {os.path.basename(file2)} are identical.\n")
 
-    comparison_result = "\n".join(result)
-    
-    # Write comparison result to Output folder
-    output_path = os.path.join(os.path.dirname(file1), 'Output', 'comparison_output.txt')
-    with open(output_path, "w") as output_file:
-        output_file.write(comparison_result)
+    return "\n".join(result)
 
 if 'XML_FILE1' in os.environ and 'XML_FILE2' in os.environ:
     file1 = os.getenv('XML_FILE1')
     file2 = os.getenv('XML_FILE2')
 
-    compare_files(file1, file2)
+    comparison_result = compare_files(file1, file2)
+    with open("SampleArtifact/comparison_output.txt", "w") as output_file:
+        output_file.write(comparison_result)
 else:
     print("Environment variables XML_FILE1 and XML_FILE2 are not set.")
