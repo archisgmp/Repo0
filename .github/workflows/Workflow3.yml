@@ -13,10 +13,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      
-      # - name: Creating directory for artifacts
-      #   run: mkdir -p SampleArtifact
 
+      - name: Creating directory for artifacts
+        run: mkdir -p SampleArtifact
+      
       - name: Setting up Node.js
         uses: actions/setup-node@v4
         with:
@@ -31,11 +31,26 @@ jobs:
          
       - name: Running Postman Collection 1 and generating JUnit XML report
         run: |
+          mkdir -p SampleArtifact
           newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report_${{ env.TIMESTAMP }}.xml" || echo "Collection1 failed" >> SampleArtifact/error_${{ env.TIMESTAMP }}.log
 
       - name: Listing files in SampleArtifact directory
         run: ls -al SampleArtifact
-      
+
+      - name: Commit and push reports to the main branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "archisgmp"
+          git config --global user.email "archis@getmyparking.com"
+          git checkout main
+          git pull
+          mkdir -p SampleArtifact
+          cp -r SampleArtifact/* .
+          git add SampleArtifact/*
+          git commit -m "Add new report and error log"
+          git push
+
       - name: Publishing JUnit XML Report
         uses: actions/upload-artifact@v4
         with:
