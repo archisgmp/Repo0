@@ -1,10 +1,10 @@
-name: XML Comparison Workflow
+name: Workflow 4
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  # push:
+  #   branches: [ "main" ]
+  # pull_request:
+  #   branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -13,8 +13,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      
-      # Assuming you already have a job or step that generates XML reports.
       
       - name: Download existing reports
         run: |
@@ -26,10 +24,7 @@ jobs:
       - name: Setting up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.10
-
-      - name: Installing required Python packages
-        run: pip install lxml
+            python-version: '3.x'
 
       - name: Set environment variables for XML comparison
         run: |
