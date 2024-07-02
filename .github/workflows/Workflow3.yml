@@ -1,42 +1,21 @@
-name: Workflow 3
+name: List SampleArtifact Directory
 
 on:
-    push:
-      branches: [ "main" ]
-    pull_request:
-      branches: [ "main" ]
-    workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
-  build:
+  list-files:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Creating directory for artifacts
-        run: mkdir SampleArtifact
 
-      - name: Setting up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22.3.0
-          
-      - name: Installing Newman
-        run: sudo npm i newman@latest
-         
-      - name: Running Postman Collection 1 and generating JUnit XML report
-        run: |
-          newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report2.xml" || echo "Collection1 failed" >> SampleArtifact/error1.log
-      - name: Publishing JUnit XML Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: JUnit Report for Collection1
-          path: SampleArtifact/report2.xml
+      # - name: Creating directory for artifacts
+      #   run: mkdir SampleArtifact
 
-      - name: Publishing error log (if any)
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: Error Log for Collection1
-          path: SampleArtifact/error1.log
+      - name: Listing files in SampleArtifact directory
+        run: ls -al SampleArtifact
