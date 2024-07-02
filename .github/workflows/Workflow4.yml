@@ -1,4 +1,4 @@
-name: XML Comparison Workflow
+name: XML Report Comparison
 
 on:
   # push:

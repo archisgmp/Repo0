@@ -1,4 +1,4 @@
-name: Workflow 3
+name: XML Report Generation and Commision
 
 on:
   # push:
