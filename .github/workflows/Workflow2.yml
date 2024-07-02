@@ -1,4 +1,6 @@
-name: XML Report Generation
+name: Workflow 2
+
+# Generating an XML report onto the artifacts page
 
 on:
     # push:

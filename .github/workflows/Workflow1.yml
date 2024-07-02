@@ -1,4 +1,6 @@
-name: XML Reports Generation & Comparison
+name: Workflow 1
+
+# Generating XML reports and their comparison reports onto the artifacts page
 
 on:
     # push:

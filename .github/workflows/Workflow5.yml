@@ -1,4 +1,6 @@
-name: XML Report Comparison and Generation
+name: Workflow 5
+
+# Generating a comparison report of the XML reports on the main branch onto the main branch
 
 on:
   # push:
