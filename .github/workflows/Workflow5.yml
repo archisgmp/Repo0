@@ -42,8 +42,7 @@ jobs:
       - name: Create Output folder and move comparison output
         run: |
             mkdir -p SampleArtifact/Output
-            mv comparison_output.txt SampleArtifact/Output/
-  
+              
       - name: Commit and push comparison result to main branch
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
