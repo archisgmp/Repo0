@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Download existing reports
         run: |
           git fetch
@@ -21,22 +21,24 @@ jobs:
           mkdir -p SampleArtifact
           cp -r SampleArtifact/* .
 
+      - name: Set environment variables for XML comparison
+        run: |
+          echo "XML_FILE1=SampleArtifact/$(ls -t SampleArtifact | grep '^report_' | tail -n 2 | head -n 1)" >> $GITHUB_ENV
+          echo "XML_FILE2=SampleArtifact/$(ls -t SampleArtifact | grep '^report_' | head -n 1)" >> $GITHUB_ENV
+
       - name: Setting up Python
         uses: actions/setup-python@v4
         with:
             python-version: '3.x'
 
-      - name: Set environment variables for XML comparison
-        run: |
-          echo "XML_FILE1=SampleArtifact/report_$(ls -t SampleArtifact | grep '^report_' | tail -n 2 | head -n 1)" >> $GITHUB_ENV
-          echo "XML_FILE2=SampleArtifact/report_$(ls -t SampleArtifact | grep '^report_' | head -n 1)" >> $GITHUB_ENV
-
-      - name: Running XML comparison script
+      - name: Run XML comparison script
+        env:
+          XML_FILE1: ${{ env.XML_FILE1 }}
+          XML_FILE2: ${{ env.XML_FILE2 }}
         run: python compare_xml.py
 
-      - name: Publishing comparison result
-        uses: actions/upload-artifact@v4
+      - name: Publish comparison result
+        uses: actions/upload-artifact@v2
         with:
           name: XML Comparison Result
           path: SampleArtifact/comparison_output.txt
-
