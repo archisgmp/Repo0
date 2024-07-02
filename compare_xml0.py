@@ -67,13 +67,12 @@ def compare_files(file1, file2):
 
     return "\n".join(result)
 
-if __name__ == "__main__":
-    if 'XML_FILE1' in os.environ and 'XML_FILE2' in os.environ:
-        file1 = os.getenv('XML_FILE1')
-        file2 = os.getenv('XML_FILE2')
+if 'XML_FILE1' in os.environ and 'XML_FILE2' in os.environ:
+    file1 = os.getenv('XML_FILE1')
+    file2 = os.getenv('XML_FILE2')
 
-        comparison_result = compare_files(file1, file2)
-        with open("SampleArtifact/comparison_output.txt", "w") as output_file:
-            output_file.write(comparison_result)
-    else:
-        print("Environment variables XML_FILE1 and XML_FILE2 are not set.")
+    comparison_result = compare_files(file1, file2)
+    with open("SampleArtifact/comparison_output.txt", "w") as output_file:
+        output_file.write(comparison_result)
+else:
+    print("Environment variables XML_FILE1 and XML_FILE2 are not set.")
