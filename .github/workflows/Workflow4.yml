@@ -1,4 +1,4 @@
-name: Workflow 4
+name: XML Comparison Workflow
 
 on:
   push:
@@ -21,15 +21,22 @@ jobs:
           mkdir -p SampleArtifact
           cp -r SampleArtifact/* .
 
-      - name: Set environment variables for XML comparison
-        run: |
-          echo "XML_FILE1=SampleArtifact/$(ls -t SampleArtifact | grep '^report_' | tail -n 2 | head -n 1)" >> $GITHUB_ENV
-          echo "XML_FILE2=SampleArtifact/$(ls -t SampleArtifact | grep '^report_' | head -n 1)" >> $GITHUB_ENV
-
-      - name: Setting up Python
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
-            python-version: '3.x'
+          python-version: '3.x'
+
+      - name: Identify most recent XML files
+        id: find_xml_files
+        run: |
+          ls -t SampleArtifact/*.xml | head -n 2 > xml_files.txt
+          echo "::set-output name=file1::$(sed -n '1p' xml_files.txt)"
+          echo "::set-output name=file2::$(sed -n '2p' xml_files.txt)"
+
+      - name: Set environment variables for XML comparison
+        run: |
+          echo "XML_FILE1=$(cat xml_files.txt | head -n 1)" >> $GITHUB_ENV
+          echo "XML_FILE2=$(cat xml_files.txt | tail -n 1)" >> $GITHUB_ENV
 
       - name: Run XML comparison script
         env:
