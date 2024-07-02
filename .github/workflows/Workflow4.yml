@@ -22,9 +22,9 @@ jobs:
           cp -r SampleArtifact/* .
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.x'  # Replace with your Python version
+          python-version: '3.x'
 
       - name: Identify most recent XML files
         id: find_xml_files
@@ -44,14 +44,8 @@ jobs:
           XML_FILE2: ${{ env.XML_FILE2 }}
         run: python compare_xml.py
 
-      - name: Create Output folder if it doesn't exist
-        run: mkdir -p SampleArtifact/Output
-
-      - name: Move comparison output to Output folder
-        run: mv SampleArtifact/comparison_output.txt SampleArtifact/Output/
-
       - name: Publish comparison result
         uses: actions/upload-artifact@v2
         with:
           name: XML Comparison Result
-          path: SampleArtifact/Output/comparison_output.txt
+          path: SampleArtifact/comparison_output.txt
