@@ -52,9 +52,9 @@ jobs:
           git config --global user.email "archis@getmyparking.com"
           git checkout main
           git pull
-          mkdir -p SampleArtifact
-          cp -r SampleArtifact/* .
-          git add SampleArtifact/*
+          mkdir -p SampleArtifact/Output
+          cp -r SampleArtifact/Output/* .
+          git add SampleArtifact/Output/*
           git commit -m "Add comparison output"
           git push
 
