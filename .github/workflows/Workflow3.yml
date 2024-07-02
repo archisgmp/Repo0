@@ -1,10 +1,10 @@
 name: Workflow 3
 
 on:
-  # push:
-  #   branches: [ "main" ]
-  # pull_request:
-  #   branches: [ "main" ]
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -14,8 +14,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      # - name: Creating directory for artifacts
-      #   run: mkdir SampleArtifact
+      - name: Creating directory for artifacts
+        run: mkdir -p SampleArtifact
 
       - name: Setting up Node.js
         uses: actions/setup-node@v4
@@ -24,10 +24,14 @@ jobs:
           
       - name: Installing Newman
         run: sudo npm i newman@latest
+
+      - name: Generating unique timestamp
+        id: timestamp
+        run: echo "TIMESTAMP=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
          
       - name: Running Postman Collection 1 and generating JUnit XML report
         run: |
-          newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report2.xml" || echo "Collection1 failed" >> SampleArtifact/error1.log
+          newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report_${{ env.TIMESTAMP }}.xml" || echo "Collection1 failed" >> SampleArtifact/error_${{ env.TIMESTAMP }}.log
 
       - name: Listing files in SampleArtifact directory
         run: ls -al SampleArtifact
@@ -36,11 +40,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: JUnit Report for Collection1
-          path: SampleArtifact/report2.xml
+          path: SampleArtifact/report_${{ env.TIMESTAMP }}.xml
 
       - name: Publishing error log (if any)
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: Error Log for Collection1
-          path: SampleArtifact/error1.log
+          path: SampleArtifact/error_${{ env.TIMESTAMP }}.log
