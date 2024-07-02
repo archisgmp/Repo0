@@ -20,11 +20,6 @@ jobs:
         with:
           python-version: '3.x'
 
-    #   - name: Install dependencies
-    #     run: |
-    #       python -m pip install --upgrade pip
-    #       pip install xml.etree.ElementTree
-
       - name: Identify most recent XML files
         id: find_xml_files
         run: |
@@ -44,19 +39,24 @@ jobs:
         run: |
           python compare_xml.py > SampleArtifact/comparison_output.txt
 
+      - name: Create Output folder and move comparison output
+        run: |
+            mkdir -p SampleArtifact/Output
+            mv comparison_output.txt SampleArtifact/Output/
+  
       - name: Commit and push comparison result to main branch
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config --global user.name "archisgmp"
-          git config --global user.email "archis@getmyparking.com"
-          git checkout main
-          git pull
-          mkdir -p SampleArtifact/Output
-          cp -r SampleArtifact/Output/* .
-          git add SampleArtifact/Output/*
-          git commit -m "Add comparison output"
-          git push
+            git config --global user.name "archisgmp"
+            git config --global user.email "archis@getmyparking.com"
+            git checkout main
+            git pull
+            mkdir -p SampleArtifact/Output
+            cp -r SampleArtifact/Output/* .
+            git add SampleArtifact/Output/*
+            git commit -m "Add comparison output"
+            git push
 
       - name: Publish comparison result
         uses: actions/upload-artifact@v2
