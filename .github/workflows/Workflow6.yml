@@ -1,12 +1,12 @@
 name: Workflow 6
 
-# Generating a comparison report of the XML reports on the main branch onto the output folder
+# Generating a comparison report of the XML reports on the main branch, onto the output folder.
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  # push:
+  #   branches: [ "main" ]
+  # pull_request:
+  #   branches: [ "main" ]
   workflow_dispatch:
 
 jobs:

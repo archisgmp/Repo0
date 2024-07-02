@@ -1,6 +1,6 @@
 name: Workflow 3
 
-# Generating an XML report and saving it on the main branch 
+# Generating an XML report and saving it onto the main branch.
 
 on:
   # push:

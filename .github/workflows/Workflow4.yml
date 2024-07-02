@@ -1,6 +1,6 @@
 name: Workflow 4
 
-# Generating a comparison report of the XML reports on the main branch onto the artifacts page
+# Generating a comparison report of the XML reports on the main branch, onto the artifacts page.
 
 on:
   # push:

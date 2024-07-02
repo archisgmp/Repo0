@@ -1,12 +1,12 @@
-name: Workflow 5
+name: Workflow 7
 
-# Generating a comparison report of the XML reports on the main branch, onto the main branch.
+# Generating a comparison report with a unique name, of the XML reports on the main branch onto the output folder
 
 on:
-  # push:
-  #   branches: [ "main" ]
-  # pull_request:
-  #   branches: [ "main" ]
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -22,10 +22,10 @@ jobs:
         with:
           python-version: '3.x'
 
-    #   - name: Install dependencies
-    #     run: |
-    #       python -m pip install --upgrade pip
-    #       pip install xml.etree.ElementTree
+      # - name: Install dependencies
+      #   run: |
+      #     python -m pip install --upgrade pip
+      #     pip install xml.etree.ElementTree
 
       - name: Identify most recent XML files
         id: find_xml_files
@@ -43,9 +43,18 @@ jobs:
         env:
           XML_FILE1: ${{ env.XML_FILE1 }}
           XML_FILE2: ${{ env.XML_FILE2 }}
-
         run: |
           python compare_xml.py > SampleArtifact/comparison_output.txt
+
+      - name: Create Outputs directory if not exists
+        run: mkdir -p SampleArtifact/Outputs
+
+      - name: Generate unique filename with timestamp
+        id: generate_filename
+        run: echo "::set-output name=filename::comparison_output_$(date +%Y%m%d%H%M%S).txt"
+
+      - name: Move comparison output to Outputs directory with unique filename
+        run: mv SampleArtifact/comparison_output.txt SampleArtifact/Outputs/${{ steps.generate_filename.outputs.filename }}
 
       - name: Commit and push comparison result to main branch
         env:
@@ -60,9 +69,9 @@ jobs:
           git add SampleArtifact/*
           git commit -m "Add comparison output"
           git push
-
+          
       - name: Publish comparison result
         uses: actions/upload-artifact@v2
         with:
           name: XML Comparison Result
-          path: SampleArtifact/comparison_output.txt
+          path: SampleArtifact/Outputs/${{ steps.generate_filename.outputs.filename }}
