@@ -37,28 +37,24 @@ jobs:
           XML_FILE1: ${{ env.XML_FILE1 }}
           XML_FILE2: ${{ env.XML_FILE2 }}
         run: |
-          python compare_xml.py > SampleArtifact/comparison_output.txt
+          python compare_xml.py > SampleArtifact/Output/comparison_output.txt
 
-      - name: Create Output folder and move comparison output
-        run: |
-            mkdir -p SampleArtifact/Output
-              
       - name: Commit and push comparison result to main branch
         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-            git config --global user.name "archisgmp"
-            git config --global user.email "archis@getmyparking.com"
-            git checkout main
-            git pull
-            mkdir -p SampleArtifact/Output
-            cp -r SampleArtifact/Output/* .
-            git add SampleArtifact/Output/*
-            git commit -m "Add comparison output"
-            git push
+          git config --global user.name "archisgmp"
+          git config --global user.email "archis@getmyparking.com"
+          git checkout main
+          git pull
+          mkdir -p SampleArtifact/Output
+          cp -r SampleArtifact/Output/* .
+          git add SampleArtifact/Output/*
+          git commit -m "Add comparison output"
+          git push
 
       - name: Publish comparison result
         uses: actions/upload-artifact@v2
         with:
           name: XML Comparison Result
-          path: SampleArtifact/comparison_output.txt
+          path: SampleArtifact/Output/comparison_output.txt
