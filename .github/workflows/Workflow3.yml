@@ -14,8 +14,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Creating directory for artifacts
-        run: mkdir -p SampleArtifact
+      # - name: Creating directory for artifacts
+      #   run: mkdir -p SampleArtifact
 
       - name: Setting up Node.js
         uses: actions/setup-node@v4
