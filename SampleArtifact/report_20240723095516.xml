@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Integration Tests Copy" tests="3" time="0.000">
+  <testsuite name="App Copy / Login Copy / Email Login" id="db9449a3-bac9-46db-b5d0-478426bb5e6f" timestamp="2024-07-23T09:55:23.695Z" tests="0" failures="0" errors="2" time="0.000">
+    <system-err><![CDATA[Iteration: 0
+RequestError: Error: connect ETIMEDOUT 21.0.0.225:5000
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+
+---
+testScriptError: "undefined" is not valid JSON
+---
+]]></system-err>
+  </testsuite>
+  <testsuite name="App Copy / Login Copy / Forgot Password" id="8eb33633-67ff-4045-b0cc-2759c8728a52" timestamp="2024-07-23T09:55:23.695Z" tests="1" failures="1" errors="1" time="0.000">
+    <system-err><![CDATA[Iteration: 0
+RequestError: Error: connect ETIMEDOUT 21.0.0.225:5000
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+
+---
+]]></system-err>
+    <testcase name="Response status code is 204" time="0.000" classname="IntegrationTestsCopy">
+      <failure type="AssertionFailure" message="expected PostmanResponse{ …(5) } to have property 'code'">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: b35901c8-fc17-4fd1-888f-d7906801c178.]]>
+        <![CDATA[Collection name: Integration Tests Copy.]]>
+        <![CDATA[Request name: App Copy / Login Copy / Forgot Password.]]>
+        <![CDATA[Test description: Response status code is 204.]]>
+        <![CDATA[Error message: expected PostmanResponse{ …(5) } to have property 'code'.]]>
+        <![CDATA[Stacktrace: AssertionError: expected PostmanResponse{ …(5) } to have property 'code'
+   at Object.eval sandbox-script.js:1:2).]]>
+      </failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="App Copy / Login Copy / Social Login" id="0d09b46e-4d08-440e-a285-db050decde68" timestamp="2024-07-23T09:55:23.695Z" tests="1" failures="1" errors="1" time="0.000">
+    <system-err><![CDATA[Iteration: 0
+RequestError: Error: connect ETIMEDOUT 21.0.0.225:5000
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+
+---
+]]></system-err>
+    <testcase name="Response status code is 200" time="0.000" classname="IntegrationTestsCopy">
+      <failure type="AssertionFailure" message="expected PostmanResponse{ …(5) } to have property 'code'">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: b35901c8-fc17-4fd1-888f-d7906801c178.]]>
+        <![CDATA[Collection name: Integration Tests Copy.]]>
+        <![CDATA[Request name: App Copy / Login Copy / Social Login.]]>
+        <![CDATA[Test description: Response status code is 200.]]>
+        <![CDATA[Error message: expected PostmanResponse{ …(5) } to have property 'code'.]]>
+        <![CDATA[Stacktrace: AssertionError: expected PostmanResponse{ …(5) } to have property 'code'
+   at Object.eval sandbox-script.js:1:3).]]>
+      </failure>
+    </testcase>
+  </testsuite>
+</testsuites>
