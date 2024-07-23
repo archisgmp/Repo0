@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Integration Tests Copy" tests="1" time="0.000">
+  <testsuite name="App Copy / Login Copy / Email Login" id="0f811722-8114-493b-8aeb-e73677d5dd07" timestamp="2024-07-23T11:22:00.839Z" tests="1" failures="1" errors="1" time="0.000">
+    <system-err><![CDATA[Iteration: 0
+RequestError: Error: connect ETIMEDOUT 21.0.0.225:5000
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+
+---
+]]></system-err>
+    <testcase name="Response status code is 200" time="0.000" classname="IntegrationTestsCopy">
+      <failure type="AssertionFailure" message="expected PostmanResponse{ …(5) } to have property 'code'">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: b35901c8-fc17-4fd1-888f-d7906801c178.]]>
+        <![CDATA[Collection name: Integration Tests Copy.]]>
+        <![CDATA[Request name: App Copy / Login Copy / Email Login.]]>
+        <![CDATA[Test description: Response status code is 200.]]>
+        <![CDATA[Error message: expected PostmanResponse{ …(5) } to have property 'code'.]]>
+        <![CDATA[Stacktrace: AssertionError: expected PostmanResponse{ …(5) } to have property 'code'
+   at Object.eval sandbox-script.js:1:1).]]>
+      </failure>
+    </testcase>
+  </testsuite>
+</testsuites>
