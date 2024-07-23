@@ -10,15 +10,19 @@
 			"name": "App Copy",
 			"item": [
 				{
-					"name": "Register",
+					"name": "Login Copy",
 					"item": [
 						{
-							"name": "Sign Up",
+							"name": "Email Login",
 							"event": [
 								{
 									"listen": "test",
 									"script": {
 										"exec": [
+											"pm.environment.set(\"consumer_id\", pm.response.json().userId);",
+											"",
+											"pm.environment.set(\"auth_token\", pm.response.json().authToken);",
+											"",
 											"pm.test('Response status code is 200', function () {",
 											"    pm.response.to.have.status(200);",
 											"})"
@@ -31,11 +35,7 @@
 									"listen": "prerequest",
 									"script": {
 										"exec": [
-											"var requestBody = JSON.parse(pm.request.body.raw);",
-											"var email = requestBody.email;",
-											"var password = requestBody.password;",
-											"pm.environment.set(\"email\", email);",
-											"pm.environment.set(\"password\", password);"
+											""
 										],
 										"type": "text/javascript",
 										"packages": {}
@@ -56,15 +56,10 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"email\": \"alt.yp-eoawpytw@yopmail.com\",\n    \"password\": \"GMPTest7*\",\n    \"socialId\": null,\n    \"socialLoginType\": null,\n    \"deviceType\": \"ANDROID\",\n    \"firstName\": \"GMP\",\n    \"lastName\": \"Test\",\n    \"promotionsEnabled\": 1,\n    \"countryCode\": null,\n    \"locationCode\": \"NM\",\n    \"referralCode\": \"\",\n    \"signUpMethod\": null,\n    \"phoneNumber\": null,\n    \"phoneNumberCountryCode\": null,\n    \"tncVersion\": null,\n    \"acceptTnC\": null,\n    \"acceptDataPolicy\": null,\n    \"addAddressRequest\": null,\n    \"accountType\": null,\n    \"vehicleNumber\": null,\n    \"externalId\": null,\n    \"signUpChannel\": null,\n    \"reservationCheckRequired\": false,\n    \"cpmsKey\": null,\n    \"signUpOrLoginRequestAt\": null\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
+									"raw": "{\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\",\n    \"locationCode\": \"NM\",\n    \"signUpMethod\": \"EMAIL\",\n    \"phoneNumber\": null,\n    \"phoneNumberCountryCode\": null,\n    \"failedResponseRequired\": true,\n    \"accountType\": null\n}"
 								},
 								"url": {
-									"raw": "{{host_url}}:5000/authentication/v1/consumer/signUp",
+									"raw": "{{host_url}}:5000/authentication/v1/consumer/login",
 									"host": [
 										"{{host_url}}"
 									],
@@ -73,7 +68,123 @@
 										"authentication",
 										"v1",
 										"consumer",
-										"signUp"
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Forgot Password",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Response status code is 204', function () {",
+											"    pm.response.to.have.status(204);",
+											"})"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "x_gmp_tenant",
+										"value": "{{tenant}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{auth_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"emailaddress\": \"{{email}}\",\n    \"phoneNumberCountryCode\": null,\n    \"phoneNumber\": null,\n    \"locationCode\": \"NM\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host_url}}:5000/authentication/v1/consumer/forgotPassword",
+									"host": [
+										"{{host_url}}"
+									],
+									"port": "5000",
+									"path": [
+										"authentication",
+										"v1",
+										"consumer",
+										"forgotPassword"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Social Login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Response status code is 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"})"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "x_gmp_tenant",
+										"value": "{{tenant}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{auth_token}}"
+									},
+									{
+										"key": "x_language_code",
+										"value": "{{x_language_code}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"accessToken\": \"demo\",\n    \"provider\": \"GOOGLE\",\n    \"externalSocialId\": \"104536562983507838296\",\n    \"firstName\": \"GMP\",\n    \"lastName\": \"Test\",\n    \"emailAddress\": \"{{email}}\",\n    \"locationCode\": \"NM\"\n}"
+								},
+								"url": {
+									"raw": "{{host_url}}:5000/authentication/v1/consumer/socialLogin",
+									"host": [
+										"{{host_url}}"
+									],
+									"port": "5000",
+									"path": [
+										"authentication",
+										"v1",
+										"consumer",
+										"socialLogin"
 									]
 								}
 							},
