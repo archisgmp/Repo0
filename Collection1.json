@@ -1,200 +1,209 @@
 {
 	"info": {
-		"_postman_id": "1eff59f8-203d-4909-8986-8e25b7234e1a",
-		"name": "Account",
+		"_postman_id": "b35901c8-fc17-4fd1-888f-d7906801c178",
+		"name": "Integration Tests Copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "36143857"
+		"_exporter_id": "29478193"
 	},
 	"item": [
 		{
-			"name": "GET Request (Login)",
-			"event": [
+			"name": "App Copy",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Response status code is 404\", function () {",
-							"    pm.expect(pm.response.code).to.equal(404);",
-							"});",
-							"",
-							"",
-							"pm.test(\"Response has the required fields - name, email, password, and id\", function () {",
-							"    const responseData = pm.response.json();",
-							"    ",
-							"    pm.expect(responseData).to.be.an('array');",
-							"",
-							"    responseData.forEach(function(item) {",
-							"        pm.expect(item).to.have.property('name');",
-							"        pm.expect(item).to.have.property('email');",
-							"        pm.expect(item).to.have.property('password');",
-							"        pm.expect(item).to.have.property('id');",
-							"    });",
-							"});",
-							"",
-							"",
-							"pm.test(\"Email is in a valid email format\", function () {",
-							"  const responseData = pm.response.json();",
-							"  ",
-							"  responseData.forEach(function(account) {",
-							"    pm.expect(account.email).to.match(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/, \"Email format is not valid\");",
-							"  });",
-							"});",
-							"",
-							"",
-							"pm.test(\"Password is a non-empty string\", function () {",
-							"    const responseData = pm.response.json();",
-							"    ",
-							"    pm.expect(responseData).to.be.an('array');",
-							"    responseData.forEach(function(account) {",
-							"        pm.expect(account.password).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Password should not be empty\");",
-							"    });",
-							"});",
-							"",
-							"",
-							"pm.test(\"ID is a non-empty string\", function () {",
-							"    const responseData = pm.response.json();",
-							"    ",
-							"    pm.expect(responseData).to.be.an('array').that.is.not.empty;",
-							"    responseData.forEach(function(item) {",
-							"        pm.expect(item.id).to.be.a('string').and.to.have.lengthOf.at.least(1);",
-							"    });",
-							"});",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"name\": \"{{$randomFirstName}}\",\n    \"email\": \"{{$randomEmail}}\",\n    \"password\": \"{{$randomPassword}}\",\n    \"id\": \"7\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"name": "Login Copy",
+					"item": [
+						{
+							"name": "Email Login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Response status code is 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"})"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "x_gmp_tenant",
+										"value": "gmp"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"alt.yp-eoawpytw@yopmail.com\",\n    \"password\": \"GMPTest7*\",\n    \"locationCode\": \"NM\",\n    \"signUpMethod\": \"EMAIL\",\n    \"phoneNumber\": null,\n    \"phoneNumberCountryCode\": null,\n    \"failedResponseRequired\": true,\n    \"accountType\": null\n}"
+								},
+								"url": {
+									"raw": "http://internal-apcoa-dev-internal-elb-1674191319.ap-south-1.elb.amazonaws.com:5000/authentication/v1/consumer/login",
+									"protocol": "http",
+									"host": [
+										"internal-apcoa-dev-internal-elb-1674191319",
+										"ap-south-1",
+										"elb",
+										"amazonaws",
+										"com"
+									],
+									"port": "5000",
+									"path": [
+										"authentication",
+										"v1",
+										"consumer",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Forgot Password",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Response status code is 204', function () {",
+											"    pm.response.to.have.status(204);",
+											"})"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "x_gmp_tenant",
+										"value": "gmp",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer nFkS73aYmF8BsTg2pVL0T2E5WOrPhUpq0njsc32G/nlV7vxXUSgnhiD3pwLpnp4X5OAgaNCya2vb9cs3IAnmYuRYaSi6dpofPR6/yuEpPg+YejC0yugs/YmXcHfp8e/zCYTfFSDBPwHlIrY3rA7fngogn8CM8tG7bBpi3uT25lLSb7fQ4hHJZQMeI4akovydR+ygNG3KGCijpfCK+ZZiaoopWNjZo7u2TUBe+VEo4dksx75ZiNu9K2SO7N87e1u4RVbPvjPe8fu4X6jqnm/cjf5gJGp/qBA2vOx3/wLXgi+VUWBQ97bHgwIK/Vs44msZ6ov27U3Efwp+xKhhTAo4F6iiih0wgPAZgSIUwSv0cJbI4HQD3LpCiK8bktEcezEvhCsvMYD5TS9/BFmhJ0nLbwbQjm3CCbjQ4oD1oOl8JjQnurKX25iiVdX7jmr9hTB9LGdubNO2VMOeJgoysHA/M3rL95t7xuIGXMQjI8gHyko2frhtzzLC5lfEhfWVoTA2W2ZTGIiR5SOS3UessX1g2ZaCEXAjJQFS0+0XT97AR8091wY+UvJkjCmpYomLs6fm",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"emailaddress\": \"alt.yp-eoawpytw@yopmail.com\",\n    \"phoneNumberCountryCode\": null,\n    \"phoneNumber\": null,\n    \"locationCode\": \"NM\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://internal-apcoa-dev-internal-elb-1674191319.ap-south-1.elb.amazonaws.com:5000/authentication/v1/consumer/forgotPassword",
+									"protocol": "http",
+									"host": [
+										"internal-apcoa-dev-internal-elb-1674191319",
+										"ap-south-1",
+										"elb",
+										"amazonaws",
+										"com"
+									],
+									"port": "5000",
+									"path": [
+										"authentication",
+										"v1",
+										"consumer",
+										"forgotPassword"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Social Login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Response status code is 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"})"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "x_gmp_tenant",
+										"value": "gmp"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer nFkS73aYmF8BsTg2pVL0T2E5WOrPhUpq0njsc32G/nlV7vxXUSgnhiD3pwLpnp4X5OAgaNCya2vb9cs3IAnmYuRYaSi6dpofPR6/yuEpPg+YejC0yugs/YmXcHfp8e/zCYTfFSDBPwHlIrY3rA7fngogn8CM8tG7bBpi3uT25lLSb7fQ4hHJZQMeI4akovydR+ygNG3KGCijpfCK+ZZiaoopWNjZo7u2TUBe+VEo4dksx75ZiNu9K2SO7N87e1u4RVbPvjPe8fu4X6jqnm/cjf5gJGp/qBA2vOx3/wLXgi+VUWBQ97bHgwIK/Vs44msZ6ov27U3Efwp+xKhhTAo4F6iiih0wgPAZgSIUwSv0cJbI4HQD3LpCiK8bktEcezEvhCsvMYD5TS9/BFmhJ0nLbwbQjm3CCbjQ4oD1oOl8JjQnurKX25iiVdX7jmr9hTB9LGdubNO2VMOeJgoysHA/M3rL95t7xuIGXMQjI8gHyko2frhtzzLC5lfEhfWVoTA2W2ZTGIiR5SOS3UessX1g2ZaCEXAjJQFS0+0XT97AR8091wY+UvJkjCmpYomLs6fm"
+									},
+									{
+										"key": "x_language_code",
+										"value": "en"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"accessToken\": \"demo\",\n    \"provider\": \"GOOGLE\",\n    \"externalSocialId\": \"104536562983507838296\",\n    \"firstName\": \"GMP\",\n    \"lastName\": \"Test\",\n    \"emailAddress\": \"alt.yp-eoawpytw@yopmail.com\",\n    \"locationCode\": \"NM\"\n}"
+								},
+								"url": {
+									"raw": "http://internal-apcoa-dev-internal-elb-1674191319.ap-south-1.elb.amazonaws.com:5000/authentication/v1/consumer/socialLogin",
+									"protocol": "http",
+									"host": [
+										"internal-apcoa-dev-internal-elb-1674191319",
+										"ap-south-1",
+										"elb",
+										"amazonaws",
+										"com"
+									],
+									"port": "5000",
+									"path": [
+										"authentication",
+										"v1",
+										"consumer",
+										"socialLogin"
+									]
+								}
+							},
+							"response": []
 						}
-					}
-				},
-				"url": {
-					"raw": "https://{{secretKey}}.mockapi.io/account/Login",
-					"protocol": "https",
-					"host": [
-						"{{secretKey}}",
-						"mockapi",
-						"io"
-					],
-					"path": [
-						"account",
-						"Login"
 					]
 				}
-			},
-			"response": []
-		},
-		{
-			"name": "GET Request (Profile)",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Response status code is 200\", function () {",
-							"    pm.expect(pm.response.code).to.equal(200);",
-							"});",
-							"",
-							"pm.test(\"Response has the required fields - country, phone, address, pincode and id\", function () {",
-							"    const responseData = pm.response.json();",
-							"    pm.expect(responseData).to.be.an('array');",
-							"    responseData.forEach(function(item) {",
-							"        pm.expect(item).to.have.property('country');",
-							"        pm.expect(item).to.have.property('phone');",
-							"        pm.expect(item).to.have.property('address');",
-							"        pm.expect(item).to.have.property('pincode');",
-							"        pm.expect(item).to.have.property('id');",
-							"    });",
-							"});",
-							"",
-							"pm.test(\"Response time is less than 600ms\", function () {",
-							"    pm.expect(pm.response.responseTime).to.be.below(600);",
-							"});",
-							"",
-							"pm.test(\"Each phone number in the response body follows the format 123-456-7890\", function () {",
-							"    const responseData = pm.response.json();",
-							"    responseData.forEach(function(item) {",
-							"        pm.expect(item.phone).to.match(/^\\d{3}-\\d{3}-\\d{4}$/);",
-							"    });",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "https://{{secretKey}}.mockapi.io/account/Profile",
-					"protocol": "https",
-					"host": [
-						"{{secretKey}}",
-						"mockapi",
-						"io"
-					],
-					"path": [
-						"account",
-						"Profile"
-					]
-				}
-			},
-			"response": []
-		}
-	],
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"packages": {},
-				"exec": [
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"packages": {},
-				"exec": [
-					""
-				]
-			}
-		}
-	],
-	"variable": [
-		{
-			"key": "secretKey",
-			"value": "6673f2fd75872d0e0a947393",
-			"type": "string"
+			]
 		}
 	]
 }
