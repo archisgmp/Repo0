@@ -22,10 +22,13 @@ jobs:
       - name: Setting up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.3.0
+          node-version: 20.15.0
+
+      - name: Setting npm version
+        run: npm install -g npm@10.7.0
           
       - name: Installing Newman
-        run: sudo npm i newman@latest
+        run: sudo npm i newman@6.1.3
 
       - name: Generating unique timestamp
         id: timestamp
@@ -35,7 +38,7 @@ jobs:
         run: |
           mkdir -p SampleArtifact
           newman run "Collection1.json" -r junit --reporter-junit-export "SampleArtifact/report_${{ env.TIMESTAMP }}.xml" || echo "Collection1 failed" >> SampleArtifact/error_${{ env.TIMESTAMP }}.log
-
+          
       - name: Listing files in SampleArtifact directory
         run: ls -al SampleArtifact
 
