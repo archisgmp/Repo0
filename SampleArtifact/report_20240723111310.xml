@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Account Copy" tests="1" time="0.305">
+  <testsuite name="GET Request (Login)" id="63d48e8c-e2b7-4d38-9aa4-d0bf88e3ea97" timestamp="2024-07-23T11:13:16.507Z" tests="1" failures="1" errors="0" time="0.305">
+    <testcase name="Response status code is 200" time="0.305" classname="AccountCopy">
+      <failure type="AssertionFailure" message="expected 201 to equal 200">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: 653315c5-73a0-4355-b139-0186e204e6a2.]]>
+        <![CDATA[Collection name: Account Copy.]]>
+        <![CDATA[Request name: GET Request (Login).]]>
+        <![CDATA[Test description: Response status code is 200.]]>
+        <![CDATA[Error message: expected 201 to equal 200.]]>
+        <![CDATA[Stacktrace: AssertionError: expected 201 to equal 200
+   at Object.eval sandbox-script.js:1:1).]]>
+      </failure>
+    </testcase>
+  </testsuite>
+</testsuites>
