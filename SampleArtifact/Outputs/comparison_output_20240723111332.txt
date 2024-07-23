@@ -1,0 +1,9 @@
+File 1 - Test Failures in report_20240723102959.xml:
+  Test Suite - App Copy / Login Copy / Email Login
+  Test Case - Response status code is 200
+  Failure Message - expected PostmanResponse{ …(5) } to have property 'code'
+
+File 2 - Test Failures in report_20240723111310.xml:
+  Test Suite - GET Request (Login)
+  Test Case - Response status code is 200
+  Failure Message - expected 201 to equal 200
